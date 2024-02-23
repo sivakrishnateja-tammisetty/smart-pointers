@@ -1,0 +1,96 @@
+Smart pointers are a key feature of C++ that manage dynamic memory allocation and deallocation, ensuring more robust memory management compared to raw pointers. 
+They help prevent memory leaks and dangling pointers by automatically deallocating memory when it's no longer needed. The standard library (<memory>)
+
+
+unique_ptr:
+----------
+*Memory will get free and scope ends
+*you cannot copy them
+
+Eg:
+#include<iostream>
+#include<memory>
+using namespace std;
+
+class One
+{
+  int x;
+  public:
+  One(int n):x{n}{cout<<"Constructor "<<x<<endl;}
+  ~One(){cout<<"Memory destroyed"<<endl;}
+  void fun(){cout<<"Test function"<<endl;}
+};
+
+int main()
+{
+unique_ptr<One>p(new One(1));//Not allowed(not correct)
+unique_ptr<One>p=make_unique<One>(1);//standard way to create unique pointer
+
+unique_ptr<One>q=move(p);  //copying is allowed only with move()
+q->fun();
+  return 0;
+}
+
+
+
+
+
+shared_ptr:
+----------
+
+#include<iostream>
+#include<memory>
+using namespace std;
+class One
+{
+  int x;
+  public:
+  One(int n):x{n}{cout<<"Constructor "<<x<<endl;}
+  ~One(){cout<<"Memory destroyed"<<endl;}
+  void fun(){cout<<"Test function"<<endl;}
+};
+int main()
+{
+shared_ptr<One>p=make_shared<One>(1); //standard way for creating shared pointer
+cout<<p.use_count()<<endl;
+
+shared_ptr<One>q=p; //copy is allowed directly
+q->fun();
+cout<<q.use_count()<<endl;
+  return 0;
+}
+
+
+
+
+
+
+weak_ptr:
+
+*It doesn't maintain reference count.
+
+
+Eg:
+#include<iostream>
+#include<memory>
+using namespace std;
+class One
+{
+  int x;
+  public:
+  One(int n):x{n}{cout<<"Constructor "<<x<<endl;}
+  ~One(){cout<<"Memory destroyed"<<endl;}
+  void fun(){cout<<"Test function"<<endl;}
+};
+int main()
+{
+
+
+shared_ptr<One>p=make_shared<One>(1);
+weak_ptr<One>t=p;
+shared_ptr<One>pp=p;
+cout<<pp.use_count()<<endl;
+
+
+  return 0;
+}
